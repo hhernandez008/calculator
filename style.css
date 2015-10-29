@@ -1,11 +1,9 @@
-:focus{
-    outline: none;
-}
 #calculator{
     background-color: #6787A3;
+    border-radius: 10px;
     box-shadow: 0 1vh #133758;
 }
-#display{
+#numberDisplay{
     font-size: 250%;
     height: 75px;
     margin: 5% 0 3% 0;
@@ -15,6 +13,9 @@
     border-radius: 7px;
     color: #292929;
     text-align: right;
+}
+#equationDisplay{
+
 }
 #keypad{
     margin: 3% 0;
@@ -47,9 +48,11 @@
 }
 .clearBtn:focus{
     background-color: #D5845F;
+    border-color: #FFBC9D;
 }
 .operatorBtn:focus{
     background-color: #5D9E2F;
+    border-color: #8BCE5C;
 }
 .btn:hover, .btn:active{
     margin-top: 0.5vw;
@@ -69,7 +72,6 @@
 /* Change size for larger screens */
 @media (min-width: 768px) {
     #calculator {
-        border-radius: 10px;
         margin-top: 2%;
     }
     .btn{

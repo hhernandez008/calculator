@@ -1,13 +1,27 @@
-
+/* Global Variables */
 var my_calculator = new calculator(userInputs);//uses script from LearningFuze to pass params to userInputs function
 
 $(function(){
+
     //Number Buttons & decimal button click handler
     $("button").on("click", function(){
         var val = $(this).text();
-        my_calculator.addItem(val);
+        switch (val){
+            case 'AC':
+                my_calculator.allClear(val);
+                $numDisplay.text("");
+                break;
+            case 'C':
+                my_calculator.clear(val);
+                $numDisplay.text("");
+                break;
+            default:
+                my_calculator.addItem(val);
+        }
+
     });
 
+    var $numDisplay = $("#numberDisplay");
 
 });//end document ready function
 
@@ -19,41 +33,9 @@ $(function(){
  * @param item
  */
 function userInputs(type, value, item){
-    $("#display").text(value);
+
+    $("#numberDisplay").text(value);
     console.log(type); //will be 'item added' 'calculated' or 'error'
 
 }
 
-
-
-/*
-
- //LearningFuze Example Code
-//callback function defined
-function callback(type, value, item) {
-    switch (value) {
-        case undefined:
-            $('#display').html("");
-            break;
-        default:
-            $('#display').html(value);
-            break;
-    }
-}
-// my_calculator - creates a new calculator object
-var my_calculator = new calculator(callback);
-//after DOM load add click handlers to all buttons
-$(document).ready(function () {
-    $('button').on('click', function () {
-        var val = $(this).text();
-        switch (val) {
-            case 'AC':
-                my_calculator.allClear();
-                break;
-            default:
-                my_calculator.addItem($(this).text());
-                break;
-        }
-    });
-});
-*/
