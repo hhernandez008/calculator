@@ -1,0 +1,69 @@
+#calculator{
+    background-color: #6787A3;
+    box-shadow: 0 1vh #133758;
+}
+#display{
+    font-size: 250%;
+    margin: 5% 0 3% 0;
+    padding: 3%;
+    background-color: #DAFFFF;
+    border: 1px solid #133758;
+    border-radius: 7px;
+    color: #292929;
+    text-align: right;
+}
+#keypad{
+    margin: 3% 0;
+    text-align: center;
+}
+.btn{
+    font-size: 150%;
+    width: 23.5%;
+    height: 10vh;
+    margin: 0.25vw 0.25vw 2vh 0.25vw;
+    background-color: #E5DDC5;
+    box-shadow: 0 0.75vh #A69B7A;
+}
+.clearBtn{
+    border-color: #FFBC9D;
+    background-color: #D5845F;
+    box-shadow: 0 0.75vh #7E3615;
+}
+.operatorBtn{
+    border-color: #8BCE5C;
+    background-color: #5D9E2F;
+    box-shadow: 0 0.75vh #336510;
+}
+#doubleWide{
+    width: 48.25%;
+}
+
+.btn:hover, .btn:active {
+    margin-top: 0.5vw;
+    margin-bottom: .5vw;
+    background-color: #EDE7D7;
+    box-shadow: 0 0 #A69B7A;
+}
+.clearBtn:hover, .clearBtn:active{
+    background-color: #FFBC9D;
+}
+.operatorBtn:hover, .operatorBtn:active{
+    background-color: #CEF3B4;
+}
+
+
+/* Change size for larger screens */
+@media (min-width: 768px) {
+    #calculator {
+        border-radius: 10px;
+        margin-top: 2%;
+    }
+    .btn{
+        width: 22%;
+        height: 5vw;
+        margin: 0.25vw 0.25vw 2vh 0.25vw;
+    }
+    #doubleWide{
+        width: 47%;
+    }
+}
