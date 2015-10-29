@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, user-scalable=no">
+
+    <title>Calculator</title>
+
+    <!-- Stylesheets: Bootstrap & Custom -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="style.css">-->
+    <style>
+        #calculator{
+            background-color: #A2304E;
+            box-shadow: 0 1vh #712237;
+        }
+        #display{
+            font-size: 250%;
+            margin: 5% 0 3% 0;
+            padding: 2%;
+            background-color: #DAFFFF;
+            border-radius: 7px;
+            color: #292929;
+            text-align: right;
+        }
+        #keypad{
+            margin: 3% 0;
+            text-align: center;
+        }
+        .btn{
+            font-size: 150%;
+            width: 23.5%;
+            height: 10vh;
+            margin: 0.25vw 0.25vw 2vh 0.25vw;
+            background-color: #E5DDC5;
+            box-shadow: 0 0.75vh #A69B7A;
+        }
+        .clearBtn{
+            background-color: #D4A866;
+            box-shadow: 0 0.75vh #A69B7A;
+        }
+        .operatorBtn{
+            background-color: #ACACAC;
+            box-shadow: 0 0.75vh #8A8A8A;
+        }
+        #doubleWide{
+            width: 48.25%;
+        }
+
+        .btn:hover {
+            margin-top: 0.5vw;
+            margin-bottom: .5vw;
+            background-color: #F2EEE2;
+            box-shadow: 0 0 #A69B7A;
+        }
+
+
+        /* Change size for phone screens */
+        @media (min-width: 768px) {
+            #calculator {
+                border-radius: 10px;
+                margin-top: 2%;
+            }
+            .btn{
+                width: 22%;
+                height: 5vw;
+                margin: 0.25vw 0.25vw 2vh 0.25vw;
+            }
+            #doubleWide{
+                width: 47%;
+            }
+        }
+
+    </style>
+    <!-- Script Libraries: JQuery, Bootstrap.js, & Custom -->
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!--<script src="main.js"></script>-->
+
+</head>
+<body>
+    <div id="calculator" class = "container col-xs-12 col-sm-offset-4 col-sm-4">
+         <!-- Display -->
+        <div id="display">
+            Display
+        </div>
+         <!-- Keypad -->
+        <div id="keypad">
+            <div class="row-fluid">
+                <button type="button" class="btn btn-default clearBtn">
+                    AC
+                </button>
+                <button type="button" class="btn btn-default clearBtn">
+                    C
+                </button>
+                <button type="button" class="btn btn-default operatorBtn">
+                    &#43; &#47; &#45;<!-- Plus / Minus -->
+                </button>
+                <button type="button" class="btn btn-default operatorBtn">
+                    &#247; <!-- Divide -->
+                </button>
+            </div>
+            <div class="row-fluid">
+                <button type="button" class="btn btn-default">
+                    7
+                </button>
+                <button type="button" class="btn btn-default">
+                    8
+                </button>
+                <button type="button" class="btn btn-default">
+                    9
+                </button>
+                <button type="button" class="btn btn-default operatorBtn">
+                    x
+                </button>
+            </div>
+            <div class="row-fluid">
+                <button type="button" class="btn btn-default">
+                    4
+                </button>
+                <button type="button" class="btn btn-default">
+                    5
+                </button>
+                <button type="button" class="btn btn-default">
+                    6
+                </button>
+                <button type="button" class="btn btn-default operatorBtn">
+                    &#45; <!-- Minus -->
+                </button>
+            </div>
+            <div class="row-fluid">
+                <button type="button" class="btn btn-default">
+                    1
+                </button>
+                <button type="button" class="btn btn-default">
+                    2
+                </button>
+                <button type="button" class="btn btn-default">
+                    3
+                </button>
+                <button type="button" class="btn btn-default operatorBtn">
+                    &#43; <!-- Plus -->
+                </button>
+            </div>
+            <div class="row-fluid">
+                <button type="button" id="doubleWide" class="btn btn-default">
+                    0
+                </button>
+                <button type="button" class="btn btn-default">
+                    &#46; <!-- Period -->
+                </button>
+                <button type="button" class="btn btn-default operatorBtn">
+                    &#61; <!-- Equals -->
+                </button>
+            </div>
+        </div> <!-- END Keypad -->
+
+    </div>
+
+</body>
+</html>
