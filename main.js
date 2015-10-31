@@ -50,3 +50,11 @@ function displayCallback(type, value, item){
     console.log("Type: " + type); //will be 'item added' 'calculated' or 'error'
 }
 
+//check value function, checks if the button pressed is a operator, operand, decimal, AC, C, or +/-
+
+//store number function, determines if the number is first or later in string of numbers, or comes after an operand
+// & stores them in an array for equating
+
+//solve equation function, checks the operand pressed and solves the equation of the first two values stored( 1 +
+// 3), does not take into account order of operations as numbers are equated as entered, Returns solved equation
+
