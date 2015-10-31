@@ -3,8 +3,7 @@
     border-radius: 10px;
     box-shadow: 0 1vh #133758;
 }
-#numberDisplay{
-    font-size: 250%;
+#display{
     height: 75px;
     margin: 5% 0 3% 0;
     padding: 3%;
@@ -14,8 +13,8 @@
     color: #292929;
     text-align: right;
 }
-#equationDisplay{
-
+#numberDisplay{
+    font-size: 250%;
 }
 #keypad{
     margin: 3% 0;
