@@ -36,6 +36,6 @@ $(function(){
 function userInputs(type, value, item){
     //Print pressed button's value to the calculator
     $("#numberDisplay").text(value);
-    console.log(type); //will be 'item added' 'calculated' or 'error'
+    console.log("Type: " + type); //will be 'item added' 'calculated' or 'error'
 }
 
