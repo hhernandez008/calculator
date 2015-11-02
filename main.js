@@ -1,7 +1,7 @@
 /* Global Variables */
 var my_calculator = new calculator(displayCallback);
 var equationArray = [];
-var lastPressed = "";
+var lastNumber = "";
 var equation = "";
 
 $(document).ready(function(){

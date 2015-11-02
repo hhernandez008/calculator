@@ -2,9 +2,12 @@
 //called(type, value, item)
 var calculator = function(called){
     var self = this;
+
+    //function passed to the calculator object on creation
     self.fun = called;
+
     /**
-     * Calls function based on the value passed in.
+     * Calls method based on the value passed in.
      * @param value
      */
     self.checkValue = function(value){
@@ -21,95 +24,92 @@ var calculator = function(called){
     };
 
     /**
-     * Tests the value passed & creates number groups or passes any operators (+, -, /, *, =) to the operators function.
+     * Tests the value passed & creates number groups or passes any operators (+, -, /, *, =) to the operators method.
      * @param value
      */
     self.addToEquation = function(value){
         var val = value;
         var valObject = {};
-
+        valObject.type = "number";
+        
         //check if the value is a number, operator, decimal, or +/-
         if(isNaN(val)){
-            valObject.type = "number";
             switch (val){
                 //TODO: only allow one decimal to be inputted
                 case "decimal":
-                    if(lastPressed.length > 0){
-                        if(lastPressed.indexOf('.') > 0) {
+                    if(lastNumber.length > 0){
+                        if(lastNumber.indexOf('.') > 0) {
                             //prevent multiple decimals from being added
                             return;
                         }else {
-                            lastPressed += ".";
-                            valObject.value = lastPressed;
+                            lastNumber += ".";
+                            valObject.value = lastNumber;
                             equationArray[equationArray.length - 1] = valObject;
                         }
                     }else{
-                        lastPressed += "0.";
-                        valObject.value = lastPressed;
+                        lastNumber = "0.";
+                        valObject.value = lastNumber;
                         equationArray.push(valObject);
                     }
                     break;
                 case "negate": // +/-
                     //Change sign (positive or negative) for either current stored number or solution
                     //TODO: if only +/- pressed over & over, - stays on display need to pass empty value
-                    if(lastPressed.length > 0){
-                        if(lastPressed == "-"){
-                            lastPressed = "";
+                    if(lastNumber.length > 0){
+                        if(lastNumber == "-"){
+                            lastNumber = "";
                             equationArray.pop();
                         }else {
-                            lastPressed = (-1) * parseFloat(lastPressed);
-                            valObject.value = "" + lastPressed;
+                            lastNumber = (-1) * parseFloat(lastNumber);
+                            valObject.value = "" + lastNumber;
                             equationArray[equationArray.length - 1] = valObject;
                         }
                     }else{
-                        lastPressed = "-";
-                        valObject.value = lastPressed;
+                        lastNumber = "-";
+                        valObject.value = lastNumber;
                         equationArray.push(valObject);
                     }
                     break;
                 default:
-                    lastPressed = "";
+                    lastNumber = "";
                     //plus, minus, divide, multiply, equals
                     self.operators(valObject, val);
-            } //end switch
+            } //end switch(val)
+        // end true, if(isNaN(val))
         }else{
-            valObject.type = "number";
-            //add the number to the lastPressed variable
-            lastPressed += val;
-            valObject.value = lastPressed;
-            //store in equationArray; overwrite last index with new number multiple numbers pressed before operand
-            if(lastPressed.length > 1){
+            //add the number to the lastNumber variable
+            lastNumber += val;
+            valObject.value = lastNumber;
+            //store in equationArray; overwrite last index with new number, if multiple numbers pressed before operand
+            if(lastNumber.length > 1){
                 equationArray[equationArray.length - 1] = valObject;
             } else{
                 equationArray.push(valObject);
             }
         } //end if/else
 
-        //FOR TESTING: what is the value of lastPressed?
-        console.log(lastPressed);
+        //FOR TESTING: what is the value of lastNumber?
+        console.log(lastNumber);
         //FOR TESTING: what is in the array?
         console.log(equationArray);
-        self.fun(valObject.type, valObject.value);
-    }; //end addToEquation function
 
-    //determine the value of the operator
+        //pass the object type & value into the called function
+        self.fun(valObject.type, valObject.value);
+    }; //end addToEquation method
+
+    /**
+     * Determine the value of the operator, if equals pass to the equals method, store all others.
+     * @param object
+     * @param value
+     */
     self.operators = function(object, value){
         object.type = "operator";
-        //prevent operator from being the first value stored & for two operators being entered consecutively
+        //prevent operator from being the first value stored
         if(equationArray.length < 1){
             //TODO: prevent undefined from returning to equation display
             return;
-        }else if(value == "equals"){ //equals button pressed
-            //object.value = "=";
-            equationArray[0] = self.equals(object);
-            object.type = "equalSign";
-            console.log("equals");
-            return object;
-        } else if(equationArray.length == 3){ //array holds 2 numbers & 1 operator, & 2nd operator (besides equals) pressed
-            //solve the currently stored equation
-            equationArray[0] = self.equals(object);
         }
-
+        //set value of the operator pressed
         switch (value) {
             case "add":
                 object.value = "+";
@@ -123,19 +123,31 @@ var calculator = function(called){
             case "divide":
                 object.value = "/";
                 break;
-            default:
-                console.log("Unknown operator: " + value);
+            default: //equals
+                equationArray[0] = self.equals(object);
+                object.type = "equalSign";
+                console.log("equals");
+                return;
         }
 
-        if (equationArray[equationArray.length - 1].type == "operator"){
+        if(equationArray.length == 3){
+            //array holds 2 numbers & 1 operator, & 2nd operator (besides equals) pressed
+            //solve the currently stored equation
+            equationArray[0] = self.equals(object);
+        } else if(equationArray[equationArray.length - 1].type == "operator"){
+            //prevent operators from being stored consecutively, last operator pressed stored
             equationArray[equationArray.length - 1] = object;
         }else{
             equationArray.push(object);
         }
-    };
+    }; //end operators method
 
-    //solve equation function, checks the operand pressed and solves the equation of the first two values stored( 1 +
-    // 3), does not take into account order of operations as numbers are equated as entered, Returns solved equation
+    /**
+     * Solve equation: Array to only hold 3 values.
+     * Check the operand pressed and solve the equation based on the value of the operand stored in index[1]
+     * does not take into account order of operations as numbers are equated as entered, Returns solved equation
+     * @param object
+     */
     self.equals = function (object){
         object.type = "number";
         switch (equationArray[1].value) {
@@ -157,24 +169,28 @@ var calculator = function(called){
         }
         equationArray = [];
         //return object;
-    };
+    }; //end equals method
 
-    // clear all of the values from array & clear display
+    /**
+     * Clear all of the values held in the array, lastNumber, & clear display
+     */
     self.clearAll = function(){
-        $("#numberDisplay").text("");
-        $("#equationDisplay").text("");
+        $("#numberDisplay").text("0");
+        //$("#equationDisplay").text("");
         equation = "";
         equationArray = [];
-        lastPressed = "";
-    };
+        lastNumber = "";
+    }; //end clearAll method
 
-    // clear last inputted button group or operator from array, number display, & equation display
+    /**
+     * Clear lastNumber or operator from array, number display, & equation display
+     */
     self.clear = function(){
-        $("#numberDisplay").text("");
+        $("#numberDisplay").text("0");
         //TODO: how to clear last entered item from equation display.
         equationArray.pop();
-        lastPressed = "";
-    };
+        lastNumber = "";
+    }; //end clear method
 
 
 
