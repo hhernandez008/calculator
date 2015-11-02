@@ -24,12 +24,16 @@ $(function(){
  * //@param item; to be added in later
  */
 function displayCallback(type, value){
-    if(type != "calculated") {
+    /*if(type == "equalSign") {
+        equation += "=" + value;
+        $("#equationDisplay").text(equation);
+        equation = "";
+    }else{
         equation += value;
         //display current equation
         $("#equationDisplay").text(equation);
         //TODO: display number string larger than one number in equation display correctly. EX. 12 not 112
-    }
+    }*/
     //Print pressed button's value to the calculator
     $("#numberDisplay").text(value);
     console.log("Type: " + type); //will be 'number', 'operator', or 'equalSign'
@@ -54,16 +58,16 @@ function checkValue(value){
 function calcOperation(value){
     var val = value;
     var valObject = {};
+
     //check if the value is a number, operator, decimal, or +/-
     if(isNaN(val)){
         //FOR TESTING
         console.log('NaN');
-        valObject.type = "operator";
+        valObject.type = "number";
         switch (val){
             //TODO: verify a number was added to array before adding operator
             //TODO: only allow one operator to be inputted
             case "decimal":
-                valObject.type = "number";
                 if(lastPressed.length > 0){
                     lastPressed += ".";
                     valObject.value = lastPressed;
@@ -92,32 +96,10 @@ function calcOperation(value){
                     equationArray.push(valObject);
                 }
                 break;
-            case "add":
+            default:
                 lastPressed = "";
-                valObject.value = "+";
-                equationArray.push(valObject);
-                break;
-            case "subtract":
-                lastPressed = "";
-                valObject.value = "-";
-                equationArray.push(valObject);
-                break;
-            case "multiply":
-                lastPressed = "";
-                valObject.value = "*";
-                equationArray.push(valObject);
-                break;
-            case "divide":
-                lastPressed = "";
-                valObject.value = "/";
-                equationArray.push(valObject);
-                break;
-            default: //equals
-                lastPressed = "";
-                valObject.type = "equalSign";
-                valObject.value = "=";
-                //equals();
-                console.log("equals");
+                //plus, minus, divide, multiply, equals
+                operators(valObject, val);
         } //end switch
     }else{
         valObject.type = "number";
@@ -139,9 +121,73 @@ function calcOperation(value){
     displayCallback(valObject.type, valObject.value);
 } //end calcOperation function
 
+function operators(object, value){
+    object.type = "operator";
+    //prevent operator from being the first value stored & for two operators being entered consecutively
+    if(equationArray.length < 1){
+        //TODO: prevent undefined from returning to equation display
+        return;
+    }else if(value == "equals"){ //equals button pressed
+        //object.value = "=";
+        equationArray[0] = equals(object);
+        object.type = "equalSign";
+        console.log("equals");
+        return object;
+    } else if(equationArray.length == 3){ //array holds 2 numbers & 1 operator, & 2nd operator (besides equals) pressed
+        //solve the currently stored equation
+        equationArray[0] = equals(object);
+    }
+
+    switch (value) {
+        case "add":
+            object.value = "+";
+            break;
+        case "subtract":
+            object.value = "-";
+            break;
+        case "multiply":
+            object.value = "*";
+            break;
+        case "divide":
+            object.value = "/";
+            break;
+        default:
+            console.log("Unknown operator: " + value);
+    }
+
+    if (equationArray[equationArray.length - 1].type == "operator"){
+        equationArray[equationArray.length - 1] = object;
+    }else{
+        equationArray.push(object);
+    }
+
+    //return object;
+}
+
 //solve equation function, checks the operand pressed and solves the equation of the first two values stored( 1 +
 // 3), does not take into account order of operations as numbers are equated as entered, Returns solved equation
-
+function equals(object){
+    object.type = "number";
+    switch (equationArray[1].value) {
+        case "+":
+            object.value = parseFloat(equationArray[0].value) + parseFloat(equationArray[2].value);
+            console.log(object.value);
+            break;
+        case "-":
+            object.value = parseFloat(equationArray[0].value) - parseFloat(equationArray[2].value);
+            break;
+        case "/":
+            object.value = parseFloat(equationArray[0].value) / parseFloat(equationArray[2].value);
+            break;
+        case "*":
+            object.value = parseFloat(equationArray[0].value) * parseFloat(equationArray[2].value);
+            break;
+        default:
+            console.log("Unknown operator: " + value);
+    }
+    equationArray = [];
+    //return object;
+}
 
 
 // clear all of the values from array & clear display
