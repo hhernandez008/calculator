@@ -3,8 +3,11 @@
 var calculator = function(called){
     var self = this;
     self.fun = called;
+    /**
+     * Calls function based on the value passed in.
+     * @param value
+     */
     self.checkValue = function(value){
-        //what is the value of the button pressed
         switch (value){
             case "AC":
                 self.clearAll();
@@ -13,39 +16,42 @@ var calculator = function(called){
                 self.clear();
                 break;
             default:
-                self.calcOperation(value);
-        } //end switch statement
-
+                self.addToEquation(value);
+        }
     };
 
-    //store number function, determines if the number is first or later in string of numbers, or comes after an operand
-    // & stores them in an array for equating
-    self.calcOperation = function(value){
+    /**
+     * Tests the value passed & creates number groups or passes any operators (+, -, /, *, =) to the operators function.
+     * @param value
+     */
+    self.addToEquation = function(value){
         var val = value;
         var valObject = {};
 
         //check if the value is a number, operator, decimal, or +/-
         if(isNaN(val)){
-            //FOR TESTING
-            console.log('NaN');
             valObject.type = "number";
             switch (val){
-                //TODO: verify a number was added to array before adding operator
-                //TODO: only allow one operator to be inputted
+                //TODO: only allow one decimal to be inputted
                 case "decimal":
                     if(lastPressed.length > 0){
-                        lastPressed += ".";
-                        valObject.value = lastPressed;
-                        equationArray[equationArray.length - 1] = valObject;
+                        if(lastPressed.indexOf('.') > 0) {
+                            //prevent multiple decimals from being added
+                            return;
+                        }else {
+                            lastPressed += ".";
+                            valObject.value = lastPressed;
+                            equationArray[equationArray.length - 1] = valObject;
+                        }
                     }else{
                         lastPressed += "0.";
                         valObject.value = lastPressed;
                         equationArray.push(valObject);
                     }
                     break;
-                case "negate":
-                    //TODO: change sign (positive or negative) for either current stored number or solution
-                    //TODO: if only +/- pressed over & over
+                case "negate": // +/-
+                    //Change sign (positive or negative) for either current stored number or solution
+                    //TODO: if only +/- pressed over & over, - stays on display need to pass empty value
                     if(lastPressed.length > 0){
                         if(lastPressed == "-"){
                             lastPressed = "";
@@ -84,7 +90,7 @@ var calculator = function(called){
         //FOR TESTING: what is in the array?
         console.log(equationArray);
         self.fun(valObject.type, valObject.value);
-    }; //end calcOperation function
+    }; //end addToEquation function
 
     //determine the value of the operator
     self.operators = function(object, value){
