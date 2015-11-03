@@ -1,6 +1,7 @@
 /* Global Variables */
 var my_calculator = new calculator(displayCallback);
 var equationArray = [];
+var calcMemoryArray = [];//store past equations
 var lastNumber = "";
 var equation = "";
 
@@ -22,18 +23,10 @@ $(document).ready(function(){
  * //@param item; to be added in later
  */
 function displayCallback(type, value){
-    /*if(type == "equalSign") {
-        equation += "=" + value;
-        $("#equationDisplay").text(equation);
-        equation = "";
-    }else{
-        equation += value;
-        //display current equation
-        $("#equationDisplay").text(equation);
-        //TODO: display number string larger than one number in equation display correctly. EX. 12 not 112
-    }*/
-    //Print pressed button's value to the calculator
-    $("#numberDisplay").text(value);
+    if(type != "operator") {
+        //Print pressed button's value to the calculator
+        $("#numberDisplay").text(value);
+    }
     //FOR TESTING
     console.log("Type: " + type); //will be 'number', 'operator', or 'equalSign'
 }
