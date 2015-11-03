@@ -26,6 +26,7 @@ var calculator = function(called){
 
     /**
      * Tests the value passed & creates number groups or passes any operators (+, -, /, *, =) to the operators method.
+     * Calls the function passed to the object & returns the object type & value.
      * @param value
      */
     self.addToEquation = function(value){
@@ -36,7 +37,6 @@ var calculator = function(called){
         //check if the value is a number, operator, decimal, or +/-
         if(isNaN(val)){
             switch (val){
-                //TODO: only allow one decimal to be inputted
                 case "decimal":
                     if(lastNumber.length > 0){
                         if(lastNumber.indexOf(".") > 0) {
@@ -93,8 +93,6 @@ var calculator = function(called){
             }
         } //end if/else
 
-        //FOR TESTING: what is the value of lastNumber?
-        console.log(lastNumber);
         //FOR TESTING: what is in the array?
         console.log(equationArray);
 
@@ -134,6 +132,7 @@ var calculator = function(called){
                 object.value = "/";
                 break;
             default: //equals
+                object.value = "=";
                 equationArray[0] = self.equals(object);
                 object.type = "equalSign";
                 return;
@@ -158,31 +157,54 @@ var calculator = function(called){
      * does not take into account order of operations as numbers are equated as entered, Returns solved equation
      * @param object
      */
-    self.equals = function (object){
+    self.equals = function (object) {
         object.type = "number";
-        switch (equationArray[1].value) {
-            case "+":
-                object.value = parseFloat(equationArray[0].value) + parseFloat(equationArray[2].value);
-                console.log(object.value);
-                break;
-            case "-":
-                object.value = parseFloat(equationArray[0].value) - parseFloat(equationArray[2].value);
-                break;
-            case "/":
-                //error if divide by zero
-                if(parseFloat(equationArray[2].value) == 0){
-                    object.type = "error";
-                    object.value = "Error";
-                    return error = true;
-                }else {
-                    object.value = parseFloat(equationArray[0].value) / parseFloat(equationArray[2].value);
-                }
-                break;
-            case "*":
-                object.value = parseFloat(equationArray[0].value) * parseFloat(equationArray[2].value);
-                break;
-            default:
-                console.log("Unknown operator: " + value);
+        //will only run if the equals button is pressed
+        if (equationArray.length < 3) {
+            //TODO: MAKE WORK FOR 1+1= = = 4
+            if (equationArray.length === 1 && equationArray[0].type === "equalSign") {
+                var newObject = {type: equationArray[1].type, value: equationArray[1].value};
+                equationArray.push(newObject);
+                object = {type: equationArray[2].type, value: equationArray[2].value};
+                equationArray.push(object);
+                self.equals(object);
+            } else if (equationArray.length === 1){
+                object.value = equationArray[0].value;
+            } else if (equationArray.length === 2) {
+                object.value = equationArray[0].value;
+                equationArray.push(object);
+                self.equals(object);
+            } else {
+                return;
+            }
+        }else{
+            switch (equationArray[1].value) {
+                case "+":
+                    object.value = parseFloat(equationArray[0].value) + parseFloat(equationArray[2].value);
+                    object.history = [equationArray[0], equationArray[1], equationArray[2]];
+                    break;
+                case "-":
+                    object.value = parseFloat(equationArray[0].value) - parseFloat(equationArray[2].value);
+                    object.history = [equationArray[0], equationArray[1], equationArray[2]];
+                    break;
+                case "/":
+                    //error if divide by zero
+                    if (parseFloat(equationArray[2].value) == 0) {
+                        object.type = "error";
+                        object.value = "Error";
+                        return error = true;
+                    } else {
+                        object.value = parseFloat(equationArray[0].value) / parseFloat(equationArray[2].value);
+                        object.history = [equationArray[0], equationArray[1], equationArray[2]];
+                    }
+                    break;
+                case "*":
+                    object.value = parseFloat(equationArray[0].value) * parseFloat(equationArray[2].value);
+                    object.history = [equationArray[0], equationArray[1], equationArray[2]];
+                    break;
+                default:
+                    console.log("Unknown operator: " + value);
+            }
         }
         equationArray = [];
         equationArray.push(object);
