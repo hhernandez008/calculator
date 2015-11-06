@@ -192,8 +192,8 @@ var calculator = function(called){
      * Clear all of the values held in the array, lastNumber, & clear display
      */
     self.clearAll = function(){
-        $("#numberDisplay").text("0");
-        //$("#equationDisplay").text("");
+        $("#display").text("0");
+        //$("#equationHistory").text("");
         equation = "";
         equationArray = [];
         lastNumber = "";
@@ -203,7 +203,7 @@ var calculator = function(called){
      * Clear lastNumber or operator from array, number display, & equation display
      */
     self.clear = function(){
-        $("#numberDisplay").text("0");
+        $("#display").text("0");
         //TODO: how to clear last entered item from equation display.
         equationArray.pop();
         lastNumber = "";
