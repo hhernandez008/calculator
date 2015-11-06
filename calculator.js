@@ -93,9 +93,6 @@ var calculator = function(called){
             }
         } //end if/else
 
-        //FOR TESTING: what is in the array?
-        console.log(equationArray);
-
         if (error){
             self.fun("Error", "Error");
             equationArray = [];
@@ -133,7 +130,8 @@ var calculator = function(called){
                 break;
             default: //equals
                 object.value = "=";
-                equationArray[0] = self.equals(object);
+                object.value = self.equals(object);
+                equationArray[0] = object;
                 object.type = "equalSign";
                 return;
         }
@@ -163,11 +161,19 @@ var calculator = function(called){
         if (equationArray.length < 3) {
             //TODO: MAKE WORK FOR 1+1= = = 4
             if (equationArray.length === 1 && equationArray[0].type === "equalSign") {
-                var newObject = {type: equationArray[1].type, value: equationArray[1].value};
-                equationArray.push(newObject);
-                object = {type: equationArray[2].type, value: equationArray[2].value};
-                equationArray.push(object);
-                self.equals(object);
+                var repeatOperator = {
+                    //operator from index 0's history
+                    type: equationArray[0].history[1].type,
+                    value: equationArray[0].history[1].value
+                };
+                var repeatOperand = {
+                    //second operand from index 0's history
+                    type: equationArray[0].history[2].type,
+                    value: equationArray[0].history[2].value
+                };
+                equationArray.push(repeatOperator, repeatOperand);
+                return self.equals(object);
+
             } else if (equationArray.length === 1){
                 object.value = equationArray[0].value;
             } else if (equationArray.length === 2) {
@@ -180,27 +186,28 @@ var calculator = function(called){
         }else{
             switch (equationArray[1].value) {
                 case "+":
-                    object.value = parseFloat(equationArray[0].value) + parseFloat(equationArray[2].value);
                     object.history = [equationArray[0], equationArray[1], equationArray[2]];
+                    object.value = parseFloat(equationArray[0].value) + parseFloat(equationArray[2].value);
                     break;
                 case "-":
-                    object.value = parseFloat(equationArray[0].value) - parseFloat(equationArray[2].value);
                     object.history = [equationArray[0], equationArray[1], equationArray[2]];
+                    object.value = parseFloat(equationArray[0].value) - parseFloat(equationArray[2].value);
                     break;
                 case "/":
                     //error if divide by zero
                     if (parseFloat(equationArray[2].value) == 0) {
                         object.type = "error";
                         object.value = "Error";
-                        return error = true;
+                        error = true;
+                        return;
                     } else {
-                        object.value = parseFloat(equationArray[0].value) / parseFloat(equationArray[2].value);
                         object.history = [equationArray[0], equationArray[1], equationArray[2]];
+                        object.value = parseFloat(equationArray[0].value) / parseFloat(equationArray[2].value);
                     }
                     break;
                 case "*":
-                    object.value = parseFloat(equationArray[0].value) * parseFloat(equationArray[2].value);
                     object.history = [equationArray[0], equationArray[1], equationArray[2]];
+                    object.value = parseFloat(equationArray[0].value) * parseFloat(equationArray[2].value);
                     break;
                 default:
                     console.log("Unknown operator: " + value);
@@ -208,6 +215,7 @@ var calculator = function(called){
         }
         equationArray = [];
         equationArray.push(object);
+        return object.value;
     }; //end equals method
 
     /**
@@ -230,7 +238,6 @@ var calculator = function(called){
         equationArray.pop();
         lastNumber = "";
     }; //end clear method
-
 
 
 }; //END calculator object
