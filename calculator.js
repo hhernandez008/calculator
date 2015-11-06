@@ -3,6 +3,9 @@
 var calculator = function(called){
     var self = this;
     var error = false;
+    //self.equationArray = []; ****
+    //self.calcMemoryArray = [];//store past equations *****
+    self.lastNumber = "";
 
     //function passed to the calculator object on creation
     self.fun = called;
@@ -38,41 +41,41 @@ var calculator = function(called){
             switch (val){
                 //TODO: only allow one decimal to be inputted
                 case "decimal":
-                    if(lastNumber.length > 0){
-                        if(lastNumber.indexOf(".") > 0) {
+                    if(self.lastNumber.length > 0){
+                        if(self.lastNumber.indexOf(".") > 0) {
                             //prevent multiple decimals from being added
                             return;
                         }else {
-                            lastNumber += ".";
-                            valObject.value = lastNumber;
+                            self.lastNumber += ".";
+                            valObject.value = self.lastNumber;
                             equationArray[equationArray.length - 1] = valObject;
                         }
                     }else{
-                        lastNumber = "0.";
-                        valObject.value = lastNumber;
+                        self.lastNumber = "0.";
+                        valObject.value = self.lastNumber;
                         equationArray.push(valObject);
                     }
                     break;
                 case "negate": // +/-
                     //Change sign (positive or negative) for either current stored number or solution
                     //TODO: if only +/- pressed over & over, - stays on display need to pass empty value
-                    if(lastNumber.length > 0){
-                        if(lastNumber == "-"){
-                            lastNumber = "";
+                    if(self.lastNumber.length > 0){
+                        if(self.lastNumber == "-"){
+                            self.lastNumber = "";
                             equationArray.pop();
                         }else {
-                            lastNumber = "" + ((-1) * parseFloat(lastNumber));
-                            valObject.value = lastNumber;
+                            self.lastNumber = "" + ((-1) * parseFloat(self.lastNumber));
+                            valObject.value = self.lastNumber;
                             equationArray[equationArray.length - 1] = valObject;
                         }
                     }else{
-                        lastNumber = "-";
-                        valObject.value = lastNumber;
+                        self.lastNumber = "-";
+                        valObject.value = self.lastNumber;
                         equationArray.push(valObject);
                     }
                     break;
                 default:
-                    lastNumber = "";
+                    self.lastNumber = "";
                     //plus, minus, divide, multiply, equals
                     self.operators(valObject, val);
             } //end switch(val)
@@ -82,19 +85,19 @@ var calculator = function(called){
             if(equationArray != "" && equationArray[(equationArray.length-1)].type == "equalSign"){
                 equationArray = [];
             }
-            //add the number to the lastNumber variable
-            lastNumber += val;
-            valObject.value = lastNumber;
+            //add the number to the self.lastNumber variable
+            self.lastNumber += val;
+            valObject.value = self.lastNumber;
             //store in equationArray; overwrite last index with new number, if multiple numbers pressed before operand
-            if(lastNumber.length > 1){
+            if(self.lastNumber.length > 1){
                 equationArray[equationArray.length - 1] = valObject;
             } else{
                 equationArray.push(valObject);
             }
         } //end if/else
 
-        //FOR TESTING: what is the value of lastNumber?
-        console.log(lastNumber);
+        //FOR TESTING: what is the value of self.lastNumber?
+        console.log(self.lastNumber);
         //FOR TESTING: what is in the array?
         console.log(equationArray);
 
@@ -189,24 +192,24 @@ var calculator = function(called){
     }; //end equals method
 
     /**
-     * Clear all of the values held in the array, lastNumber, & clear display
+     * Clear all of the values held in the array, self.lastNumber, & clear display
      */
     self.clearAll = function(){
         $("#display").text("0");
         //$("#equationHistory").text("");
         equation = "";
         equationArray = [];
-        lastNumber = "";
+        self.lastNumber = "";
     }; //end clearAll method
 
     /**
-     * Clear lastNumber or operator from array, number display, & equation display
+     * Clear self.lastNumber or operator from array, number display, & equation display
      */
     self.clear = function(){
         $("#display").text("0");
         //TODO: how to clear last entered item from equation display.
         equationArray.pop();
-        lastNumber = "";
+        self.lastNumber = "";
     }; //end clear method
 
 

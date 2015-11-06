@@ -2,7 +2,7 @@
 var my_calculator = new calculator(displayCallback);
 var equationArray = [];
 var calcMemoryArray = [];//store past equations
-var lastNumber = "";
+//var lastNumber = "";
 var equation = "";
 
 $(document).ready(function(){
