@@ -27,7 +27,5 @@ function displayCallback(type, value){
         //Print pressed button's value to the calculator
         $("#display").text(value);
     }
-    //FOR TESTING
-    console.log("Type: " + type); //will be 'number', 'operator', or 'equalSign'
 }
 
