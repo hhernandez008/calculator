@@ -159,7 +159,6 @@ var calculator = function(called){
         object.type = "number";
         //will only run if the equals button is pressed
         if (equationArray.length < 3) {
-            //TODO: MAKE WORK FOR 1+1= = = 4
             if (equationArray.length === 1 && equationArray[0].type === "equalSign") {
                 var repeatOperator = {
                     //operator from index 0's history
