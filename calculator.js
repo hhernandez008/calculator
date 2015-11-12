@@ -3,6 +3,12 @@
 var calculator = function(called){
     var self = this;
     var error = false;
+    //Array to hold current equation
+    self.equationArray = [];
+    //store past equations
+    self.calcMemory = [];
+    //What was the last number entered (stored as string)?
+    self.lastNumber = "";
 
     //function passed to the calculator object on creation
     self.fun = called;
@@ -38,68 +44,68 @@ var calculator = function(called){
         if(isNaN(val)){
             switch (val){
                 case "decimal":
-                    if(lastNumber.length > 0){
-                        if(lastNumber.indexOf(".") > 0) {
+                    if(self.lastNumber.length > 0){
+                        if(self.lastNumber.indexOf(".") > 0) {
                             //prevent multiple decimals from being added
                             return;
                         }else {
-                            lastNumber += ".";
-                            valObject.value = lastNumber;
-                            equationArray[equationArray.length - 1] = valObject;
+                            self.lastNumber += ".";
+                            valObject.value = self.lastNumber;
+                            self.equationArray[self.equationArray.length - 1] = valObject;
                         }
                     }else{
-                        lastNumber = "0.";
-                        valObject.value = lastNumber;
-                        equationArray.push(valObject);
+                        self.lastNumber = "0.";
+                        valObject.value = self.lastNumber;
+                        self.equationArray.push(valObject);
                     }
                     break;
                 case "negate": // +/-
                     //Change sign (positive or negative) for either current stored number or solution
                     //TODO: if only +/- pressed over & over, - stays on display need to pass empty value
-                    if(lastNumber.length > 0){
-                        if(lastNumber == "-"){
-                            lastNumber = "";
-                            equationArray.pop();
+                    if(self.lastNumber.length > 0){
+                        if(self.lastNumber == "-"){
+                            self.lastNumber = "";
+                            self.equationArray.pop();
                         }else {
-                            lastNumber = "" + ((-1) * parseFloat(lastNumber));
-                            valObject.value = lastNumber;
-                            equationArray[equationArray.length - 1] = valObject;
+                            self.lastNumber = "" + ((-1) * parseFloat(self.lastNumber));
+                            valObject.value = self.lastNumber;
+                            self.equationArray[self.equationArray.length - 1] = valObject;
                         }
                     }else{
-                        lastNumber = "-";
-                        valObject.value = lastNumber;
-                        equationArray.push(valObject);
+                        self.lastNumber = "-";
+                        valObject.value = self.lastNumber;
+                        self.equationArray.push(valObject);
                     }
                     break;
                 default:
-                    lastNumber = "";
+                    self.lastNumber = "";
                     //plus, minus, divide, multiply, equals
                     self.operators(valObject, val);
             } //end switch(val)
         // end true, if(isNaN(val))
         }else{
             //clear array if new number is pressed after the equals sign is pressed
-            if(equationArray != "" && equationArray[(equationArray.length-1)].type == "equalSign"){
-                equationArray = [];
+            if(self.equationArray != "" && self.equationArray[(self.equationArray.length-1)].type == "equalSign"){
+                self.equationArray = [];
             }
             //add the number to the lastNumber variable
-            lastNumber += val;
-            valObject.value = lastNumber;
+            self.lastNumber += val;
+            valObject.value = self.lastNumber;
             //store in equationArray; overwrite last index with new number, if multiple numbers pressed before operand
-            if(lastNumber.length > 1){
-                equationArray[equationArray.length - 1] = valObject;
+            if(self.lastNumber.length > 1){
+                self.equationArray[self.equationArray.length - 1] = valObject;
             } else{
-                equationArray.push(valObject);
+                self.equationArray.push(valObject);
             }
         } //end if/else
 
         if (error){
             self.fun("Error", "Error");
-            equationArray = [];
+            self.equationArray = [];
             error = false;
         }
         //pass the object type & value into the called function
-        self.fun(valObject.type, valObject.value);
+        self.fun(valObject.type, valObject.value, self.calcMemory);
     }; //end addToEquation method
 
     /**
@@ -110,7 +116,7 @@ var calculator = function(called){
     self.operators = function(object, value){
         object.type = "operator";
         //prevent operator from being the first value stored
-        if(equationArray.length < 1){
+        if(self.equationArray.length < 1){
             //TODO: prevent undefined from returning to equation display
             return;
         }
@@ -131,21 +137,21 @@ var calculator = function(called){
             default: //equals
                 object.value = "=";
                 object.value = self.equals(object);
-                equationArray[0] = object;
+                self.equationArray[0] = object;
                 object.type = "equalSign";
                 return;
         }
 
-        if(equationArray.length == 3){
+        if(self.equationArray.length == 3){
             //array holds 2 numbers & 1 operator, if 2nd operator (besides equals) pressed solve the current array
             var calculatedObject = {};
             self.equals(calculatedObject);
-            equationArray.push(object);
-        } else if(equationArray[equationArray.length - 1].type == "operator"){
+            self.equationArray.push(object);
+        } else if(self.equationArray[self.equationArray.length - 1].type == "operator"){
             //prevent operators from being stored consecutively, last operator pressed stored
-            equationArray[equationArray.length - 1] = object;
+            self.equationArray[self.equationArray.length - 1] = object;
         }else{
-            equationArray.push(object);
+            self.equationArray.push(object);
         }
     }; //end operators method
 
@@ -158,85 +164,105 @@ var calculator = function(called){
     self.equals = function (object) {
         object.type = "number";
         //will only run if the equals button is pressed
-        if (equationArray.length < 3) {
-            if (equationArray.length === 1 && equationArray[0].type === "equalSign") {
+        if (self.equationArray.length < 3) {
+            if (self.equationArray.length === 1 && self.equationArray[0].type === "equalSign") {
                 var repeatOperator = {
                     //operator from index 0's history
-                    type: equationArray[0].history[1].type,
-                    value: equationArray[0].history[1].value
+                    type: self.equationArray[0].history[1].type,
+                    value: self.equationArray[0].history[1].value
                 };
                 var repeatOperand = {
                     //second operand from index 0's history
-                    type: equationArray[0].history[2].type,
-                    value: equationArray[0].history[2].value
+                    type: self.equationArray[0].history[2].type,
+                    value: self.equationArray[0].history[2].value
                 };
-                equationArray.push(repeatOperator, repeatOperand);
+                self.equationArray.push(repeatOperator, repeatOperand);
                 return self.equals(object);
 
-            } else if (equationArray.length === 1){
-                object.value = equationArray[0].value;
-            } else if (equationArray.length === 2) {
-                object.value = equationArray[0].value;
-                equationArray.push(object);
+            } else if (self.equationArray.length === 1){
+                object.value = self.equationArray[0].value;
+            } else if (self.equationArray.length === 2) {
+                object.value = self.equationArray[0].value;
+                self.equationArray.push(object);
                 self.equals(object);
             } else {
                 return;
             }
         }else{
-            switch (equationArray[1].value) {
+            switch (self.equationArray[1].value) {
                 case "+":
-                    object.history = [equationArray[0], equationArray[1], equationArray[2]];
-                    object.value = parseFloat(equationArray[0].value) + parseFloat(equationArray[2].value);
+                    object.history = [self.equationArray[0], self.equationArray[1], self.equationArray[2]];
+                    object.value = parseFloat(self.equationArray[0].value) + parseFloat(self.equationArray[2].value);
+                    self.pastEquList();
                     break;
                 case "-":
-                    object.history = [equationArray[0], equationArray[1], equationArray[2]];
-                    object.value = parseFloat(equationArray[0].value) - parseFloat(equationArray[2].value);
+                    object.history = [self.equationArray[0], self.equationArray[1], self.equationArray[2]];
+                    object.value = parseFloat(self.equationArray[0].value) - parseFloat(self.equationArray[2].value);
+                    self.pastEquList();
                     break;
                 case "/":
                     //error if divide by zero
-                    if (parseFloat(equationArray[2].value) == 0) {
+                    if (parseFloat(self.equationArray[2].value) == 0) {
                         object.type = "error";
                         object.value = "Error";
                         error = true;
                         return;
                     } else {
-                        object.history = [equationArray[0], equationArray[1], equationArray[2]];
-                        object.value = parseFloat(equationArray[0].value) / parseFloat(equationArray[2].value);
+                        object.history = [self.equationArray[0], self.equationArray[1], self.equationArray[2]];
+                        object.value = parseFloat(self.equationArray[0].value) / parseFloat(self.equationArray[2].value);
+                        self.pastEquList();
                     }
                     break;
                 case "*":
-                    object.history = [equationArray[0], equationArray[1], equationArray[2]];
-                    object.value = parseFloat(equationArray[0].value) * parseFloat(equationArray[2].value);
+                    object.history = [self.equationArray[0], self.equationArray[1], self.equationArray[2]];
+                    object.value = parseFloat(self.equationArray[0].value) * parseFloat(self.equationArray[2].value);
+                    self.pastEquList();
                     break;
                 default:
                     console.log("Unknown operator: " + value);
             }
         }
-        equationArray = [];
-        equationArray.push(object);
+        self.equationArray = [];
+        self.equationArray.push(object);
         return object.value;
     }; //end equals method
+
+
+    /**
+     *
+     */
+     //Page can display up to 12 equations
+    self.pastEquList = function(){
+        self.calcMemory.push(self.equationArray[0].value + self.equationArray[1].value + self.equationArray[2].value);
+
+
+        if(self.calcMemory.length > 12){
+            var size = self.calcMemory.length;
+            //trim calcMemory down to 12 indexes, keep the newest indexes
+            self.calcMemory.splice(0,(size-12));
+        }
+    };
+
 
     /**
      * Clear all of the values held in the array, lastNumber, & clear display
      */
     self.clearAll = function(){
-        $("#display").text("0");
-        //$("#equationHistory").text("");
+        $("#number").text("0");
+        $("#operator").text("\xA0"); //non-breaking space with unicode literal
         equation = "";
-        equationArray = [];
-        lastNumber = "";
-    }; //end clearAll method
+        self.equationArray = [];
+        self.lastNumber = "";
+    };
 
     /**
      * Clear lastNumber or operator from array, number display, & equation display
      */
     self.clear = function(){
-        $("#display").text("0");
-        //TODO: how to clear last entered item from equation display.
-        equationArray.pop();
-        lastNumber = "";
-    }; //end clear method
+        $("#number").text("0");
+        self.equationArray.pop();
+        self.lastNumber = "";
+    };
 
 
 }; //END calculator object

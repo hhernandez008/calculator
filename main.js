@@ -1,16 +1,14 @@
 /* Global Variables */
-var my_calculator = new calculator(displayCallback);
-var equationArray = [];
-var calcMemoryArray = [];//store past equations
-var lastNumber = "";
-var equation = "";
+var calculator = new calculator(displayNumbers);
+
 
 $(document).ready(function(){
 
     $("button").on("click", function(){
         //What is the name of the pressed button
         var val = $(this).attr("name");
-        my_calculator.checkValue(val);
+        calculator.checkValue(val);
+        calculator.pastEquList(displayEquHistory);
     });
 
 }); //end document ready function
@@ -20,14 +18,26 @@ $(document).ready(function(){
  * Take the user pressed button's value & add's it to the calculator display
  * @param type
  * @param value
- * //@param item; to be added in later
+ * @param array
  */
-function displayCallback(type, value){
+function displayNumbers(type, value, array){
     if(type != "operator") {
         //Print pressed button's value to the calculator
-        $("#display").text(value);
+        $("#number").text(value);
+        if(type == "equalSign") {
+            $("#operator").text("=");
+            displayEquHistory(array);
+        }
+    }else{
+        $("#operator").text(value);
     }
-    //FOR TESTING
-    console.log("Type: " + type); //will be 'number', 'operator', or 'equalSign'
 }
 
+function displayEquHistory(array){
+    for(var i = 0; i < array.length; i++){
+        var $equPara = $("<p>",{
+            text: array[i]
+        });
+        $("#equationDisplay").append($equPara);
+    }
+}

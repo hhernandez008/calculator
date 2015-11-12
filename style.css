@@ -6,7 +6,7 @@ body{
     box-shadow: 0 1vh #133758;
 }
 #display{
-    height: 75px;
+    height: 90px;
     margin: 5% 0 3% 0;
     padding: 3%;
     background-color: #DAFFFF;
@@ -15,6 +15,12 @@ body{
     color: #292929;
     text-align: right;
     font-size: 250%;
+}
+#display #operator{
+    font-size: 50%;
+    margin: 0;
+    padding: 0;
+    color: #5D9E2F;
 }
 #keypad{
     margin: 3% 0;
