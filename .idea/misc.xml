@@ -30,6 +30,12 @@
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectRootManager" version="2" />
+<<<<<<< HEAD
+=======
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\Heather\AppData\Roaming\Subversion</configuration>
+  </component>
+>>>>>>> cf78eeb08a0a4323d436a9ec512c5abd1fe76bf3
   <component name="masterDetails">
     <states>
       <state key="ScopeChooserConfigurable.UI">
