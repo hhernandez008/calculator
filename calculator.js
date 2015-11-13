@@ -1,5 +1,14 @@
 //Calculator Object
 //called(type, value, item)
+
+//TODO: save equation history to display on paper
+//TODO: equation history when there are 3 objects in the array and equals is pressed should show (num1 op num2 = solution)
+//TODO: equation history when multiple num & ops pressed should show (num1 op1 num2 op2 num3 ... = solution)
+//TODO: equation history when num then equals pressed should show (num1 = num1)
+//TODO: equation history when multiply ops in a row pressed should show last op pressed
+//TODO: equation history when num op then equals pressed should show (num1 op num1 = solution) if again (solution op num1 = solution)
+//TODO: equation history when op is pressed following solution should show (solution1 op num1 = solution)
+
 var calculator = function(called){
     var self = this;
     var error = false;
@@ -9,6 +18,7 @@ var calculator = function(called){
     self.calcMemory = [];
     //What was the last number entered (stored as string)?
     self.lastNumber = "";
+    self.lastEquation = "";
 
     //function passed to the calculator object on creation
     self.fun = called;
@@ -78,7 +88,11 @@ var calculator = function(called){
                     }
                     break;
                 default:
+                    if(self.lastEquation.length > 0) {
+                        self.lastEquation += self.lastNumber;
+                    }
                     self.lastNumber = "";
+                    valObject.type = "operator";
                     //plus, minus, divide, multiply, equals
                     self.operators(valObject, val);
             } //end switch(val)
@@ -114,7 +128,6 @@ var calculator = function(called){
      * @param value
      */
     self.operators = function(object, value){
-        object.type = "operator";
         //prevent operator from being the first value stored
         if(self.equationArray.length < 1){
             //TODO: prevent undefined from returning to equation display
@@ -122,34 +135,41 @@ var calculator = function(called){
         }
         //set value of the operator pressed
         switch (value) {
-            case "add":
+            case "+":
                 object.value = "+";
                 break;
-            case "subtract":
+            case "-":
                 object.value = "-";
                 break;
-            case "multiply":
+            case "*":
                 object.value = "*";
                 break;
-            case "divide":
+            case "/":
                 object.value = "/";
                 break;
             default: //equals
-                object.value = "=";
+                object.type = "solution";
                 object.value = self.equals(object);
                 self.equationArray[0] = object;
                 object.type = "equalSign";
+                self.lastEquation += "=" + object.value;
+                self.calcMemory.push(self.lastEquation);
+                self.lastEquation = "";
                 return;
         }
 
         if(self.equationArray.length == 3){
+            self.lastEquation += object.value;
             //array holds 2 numbers & 1 operator, if 2nd operator (besides equals) pressed solve the current array
             var calculatedObject = {};
             self.equals(calculatedObject);
             self.equationArray.push(object);
+            console.log("object ", object);
+            self.fun(calculatedObject.type, calculatedObject.value);
         } else if(self.equationArray[self.equationArray.length - 1].type == "operator"){
             //prevent operators from being stored consecutively, last operator pressed stored
             self.equationArray[self.equationArray.length - 1] = object;
+            self.lastEquation = self.lastEquation.slice(0, (self.lastEquation.length-1)) + object.value;
         }else{
             self.equationArray.push(object);
         }
@@ -162,8 +182,8 @@ var calculator = function(called){
      * @param object
      */
     self.equals = function (object) {
-        object.type = "number";
-        //will only run if the equals button is pressed
+        //object.type = "number";
+        //will run only if the equals button is pressed
         if (self.equationArray.length < 3) {
             if (self.equationArray.length === 1 && self.equationArray[0].type === "equalSign") {
                 var repeatOperator = {
@@ -193,12 +213,12 @@ var calculator = function(called){
                 case "+":
                     object.history = [self.equationArray[0], self.equationArray[1], self.equationArray[2]];
                     object.value = parseFloat(self.equationArray[0].value) + parseFloat(self.equationArray[2].value);
-                    self.pastEquList();
+                    self.pastEquList(object);
                     break;
                 case "-":
                     object.history = [self.equationArray[0], self.equationArray[1], self.equationArray[2]];
                     object.value = parseFloat(self.equationArray[0].value) - parseFloat(self.equationArray[2].value);
-                    self.pastEquList();
+                    self.pastEquList(object);
                     break;
                 case "/":
                     //error if divide by zero
@@ -206,20 +226,21 @@ var calculator = function(called){
                         object.type = "error";
                         object.value = "Error";
                         error = true;
+                        self.pastEquList(object);
                         return;
                     } else {
                         object.history = [self.equationArray[0], self.equationArray[1], self.equationArray[2]];
                         object.value = parseFloat(self.equationArray[0].value) / parseFloat(self.equationArray[2].value);
-                        self.pastEquList();
+                        self.pastEquList(object);
                     }
                     break;
                 case "*":
                     object.history = [self.equationArray[0], self.equationArray[1], self.equationArray[2]];
                     object.value = parseFloat(self.equationArray[0].value) * parseFloat(self.equationArray[2].value);
-                    self.pastEquList();
+                    self.pastEquList(object);
                     break;
                 default:
-                    console.log("Unknown operator: " + value);
+                    console.log("Unknown operator");
             }
         }
         self.equationArray = [];
@@ -232,9 +253,44 @@ var calculator = function(called){
      *
      */
      //Page can display up to 12 equations
-    self.pastEquList = function(){
-        self.calcMemory.push(self.equationArray[0].value + self.equationArray[1].value + self.equationArray[2].value);
+    self.pastEquList = function(object){
 
+        if(object.type == "solution") {
+            if(self.calcMemory.length < 1){
+                self.calcMemory.push(
+                    self.equationArray[0].value
+                    + self.equationArray[1].value
+                    + self.equationArray[2].value
+                    + "=" + object.value
+                );
+            }else {
+                if (self.calcMemory[self.calcMemory.length - 1].search("=") == -1) {
+                    self.calcMemory[self.calcMemory.length - 1] += self.equationArray[0].value + self.equationArray[1].value
+                        + self.equationArray[2].value + "=" + object.value;
+
+                } else {
+                    self.calcMemory.push(
+                        self.equationArray[0].value
+                        + self.equationArray[1].value
+                        + self.equationArray[2].value
+                        + "=" + object.value
+                    );
+                }
+            }
+
+        }else if(object.type == "operator") {
+            if (self.calcMemory.length < 1) {
+                self.calcMemory.push(
+                    self.equationArray[0].value
+                    + self.equationArray[1].value
+                    + self.equationArray[2].value
+                    + object.value
+                );
+            } else {
+                self.calcMemory[self.calcMemory.length - 1] += self.equationArray[0].value + self.equationArray[1].value
+                    + self.equationArray[2].value + object.value;
+            }
+        }
 
         if(self.calcMemory.length > 12){
             var size = self.calcMemory.length;

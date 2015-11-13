@@ -8,7 +8,6 @@ $(document).ready(function(){
         //What is the name of the pressed button
         var val = $(this).attr("name");
         calculator.checkValue(val);
-        calculator.pastEquList(displayEquHistory);
     });
 
 }); //end document ready function
@@ -33,11 +32,10 @@ function displayNumbers(type, value, array){
     }
 }
 
-function displayEquHistory(array){
-    for(var i = 0; i < array.length; i++){
+function displayEquHistory(type, value){
         var $equPara = $("<p>",{
             text: array[i]
         });
         $("#equationDisplay").append($equPara);
-    }
+
 }
