@@ -24,23 +24,6 @@ var calculator = function(called){
     self.fun = called;
 
     /**
-     * Calls method based on the value passed in.
-     * @param value
-     */
-    self.checkValue = function(value){
-        switch (value){
-            case "AC":
-                self.clearAll();
-                break;
-            case "C":
-                self.clear();
-                break;
-            default:
-                self.addToEquation(value);
-        }
-    };
-
-    /**
      * Tests the value passed & creates number groups or passes any operators (+, -, /, *, =) to the operators method.
      * Calls the function passed to the object & returns the object type & value.
      * @param value
@@ -304,8 +287,6 @@ var calculator = function(called){
      * Clear all of the values held in the array, lastNumber, & clear display
      */
     self.clearAll = function(){
-        $("#number").text("0");
-        $("#operator").text("\xA0"); //non-breaking space with unicode literal
         equation = "";
         self.equationArray = [];
         self.lastNumber = "";
@@ -315,7 +296,6 @@ var calculator = function(called){
      * Clear lastNumber or operator from array, number display, & equation display
      */
     self.clear = function(){
-        $("#number").text("0");
         self.equationArray.pop();
         self.lastNumber = "";
     };
