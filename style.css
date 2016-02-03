@@ -4,9 +4,10 @@ body{
 #calculator{
     background-color: #6787A3;
     box-shadow: 0 1vh #133758;
+    font-size: 1.1em;
 }
 #display{
-    height: 75px;
+    height: 100px;
     margin: 5% 0 3% 0;
     padding: 3%;
     background-color: #DAFFFF;
@@ -23,7 +24,7 @@ body{
 .btn{
     font-size: 150%;
     width: 23.5%;
-    height: 10vh;
+    height: 12vh;
     margin: 0.25vw 0.25vw 2vh 0.25vw;
     background-color: #E5DDC5;
     box-shadow: 0 0.75vh #A69B7A;
@@ -71,6 +72,7 @@ body{
 }
 
 /* Change size for larger screens */
+/*tablet*/
 @media (min-width: 768px) {
     body{
         background-image: url("images/desk-top-inspiration-16.png");
@@ -85,11 +87,13 @@ body{
     #calculator {
         margin-top: 11vh;
         border-radius: 10px;
-
+        font-size: 1em;
+    }
+    #display{
+        height: 75px;
     }
     .btn{
         width: 22%;
-        height: 5vw;
         margin: 0.25vw 0.25vw 2vh 0.25vw;
     }
     #doubleWide{
@@ -113,5 +117,11 @@ body{
     }
     #equationDisplay p{
         margin-bottom: 2.2%;
+    }
+}
+/* small computer & up */
+@media (min-width: 992px) {
+    .btn{
+        height: 8vh;
     }
 }
